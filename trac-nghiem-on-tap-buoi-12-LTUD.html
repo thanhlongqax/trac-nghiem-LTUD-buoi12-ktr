@@ -1,0 +1,1318 @@
+    <!doctype html>
+    <html lang="vi" class="h-full">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buổi 12 - Ôn tập kiểm tra </title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Be Vietnam Pro', sans-serif; }
+        .card-enter { animation: cardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes cardIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .pulse-correct { animation: pulseG 0.5s; }
+        @keyframes pulseG { 0%,100%{ box-shadow: none; } 50%{ box-shadow: 0 0 0 8px rgba(34,197,94,0.3); } }
+        .shake-wrong { animation: shakeR 0.4s; }
+        @keyframes shakeR { 0%,100%{ transform: translateX(0); } 25%{ transform: translateX(-6px); } 75%{ transform: translateX(6px); } }
+        .progress-fill { transition: width 0.4s ease; }
+        .bounce-in { animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        @keyframes bounceIn { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.05); } 100% { transform: scale(1); } }
+        .correct-feedback { animation: correctFade 0.8s ease-out; }
+        @keyframes correctFade { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-30px) scale(0.9); } }
+        .confetti { position: fixed; pointer-events: none; }
+    </style>
+    <style>body { box-sizing: border-box; }</style>
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+    </head>
+    <body class="h-full bg-white">
+    <div id="app" class="h-full w-full overflow-auto flex flex-col items-center justify-center p-4">
+    <!-- Start Screen -->
+    <div id="start-screen" class="text-center card-enter max-w-2xl w-full">
+        <div class="mb-8">
+        <div class="w-24 h-24 mx-auto bg-gradient-to-br from-indigo-400 to-purple-500 rounded-3xl flex items-center justify-center mb-6 shadow-lg bounce-in">
+        <i data-lucide="brain" class="w-14 h-14 text-white"></i>
+        </div>
+        <h1 id="title-text" class="text-4xl font-800 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">Quiz Lập trình Ứng Dụng</h1>
+        <h1 id="title-text" class="text-4xl font-800 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">Buổi 12 - Kiểm Tra Lập Trình Ứng Dụng </h1>
+        <p id="subtitle-text" class="text-lg text-gray-600">Ôn tập kiến thức Buổi 12 - Lập Trình Ứng Dụng</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-8 text-left">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-4 border border-blue-200">
+        <div class="text-3xl mb-2">
+        📚
+        </div><span class="text-sm font-600 text-blue-700">100 câu hỏi</span><br><span class="text-xs text-blue-600">Toàn bộ chuyên đề</span>
+        </div>
+        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-4 border border-orange-200">
+        <div class="text-3xl mb-2">
+        ⏱️
+        </div><span class="text-sm font-600 text-orange-700">20 giây/câu</span><br><span class="text-xs text-orange-600">Tính điểm bonus tốc độ</span>
+        </div>
+        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-4 border border-green-200">
+        <div class="text-3xl mb-2">
+        🎯
+        </div><span class="text-sm font-600 text-green-700">Ghi điểm cao</span><br><span class="text-xs text-green-600">Max  điểm</span>
+        </div>
+        <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-4 border border-pink-200">
+        <div class="text-3xl mb-2">
+        🏆
+        </div><span class="text-sm font-600 text-pink-700">Xếp hạng</span><br><span class="text-xs text-pink-600">3 level thành công</span>
+        </div>
+        </div>
+        <div class="flex gap-3 flex-col sm:flex-row"><button onclick="showInstructions()" class="flex-1 border-2 border-indigo-600 hover:bg-indigo-50 text-indigo-600 font-600 py-3.5 rounded-xl transition-all active:scale-95"> <i data-lucide="help-circle" class="inline w-4 h-4 mr-2"></i> Cách chơi </button> <button onclick="startGame()" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-700 py-3.5 rounded-xl transition-all active:scale-95 shadow-lg"> <i data-lucide="play" class="inline w-4 h-4 mr-2"></i> Bắt đầu chơi </button>
+        </div>
+    </div><!-- Quiz Screen -->
+    <div id="quiz-screen" class="hidden max-w-lg w-full">
+        <div class="flex items-center justify-between mb-4">
+        <span id="q-counter" class="text-sm font-600 text-gray-500">1/20</span>
+        <div class="flex items-center gap-2"><button id="pause-btn" onclick="togglePause()" class="flex items-center gap-1 bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-600 border border-blue-200 transition-all" title="Dừng/Tiếp tục"> <i data-lucide="pause" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Dừng</span> </button>
+        <div id="timer-badge" class="flex items-center gap-2 bg-orange-50 text-orange-600 px-4 py-2 rounded-full text-sm font-700 border-2 border-orange-200">
+        <i data-lucide="zap" class="w-4 h-4"></i> <span id="timer-text">20</span>s
+        </div>
+        </div><span id="score-badge" class="text-lg font-700 text-indigo-600">0 <span class="text-sm">pts</span></span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3 mb-6 overflow-hidden border-2 border-gray-300">
+        <div id="progress-bar" class="progress-fill bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full" style="width:5%"></div>
+        </div>
+        <div id="question-card" class="card-enter bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border-2 border-gray-200 shadow-lg">
+        <p id="q-text"
+   style="white-space: pre-line;"
+   class="text-xl font-700 text-gray-900 mb-6 leading-relaxed"></p>
+        <div id="options" class="space-y-3"></div>
+        </div>
+    </div><!-- Result Screen -->
+    <div id="result-screen" class="hidden text-center card-enter max-w-2xl w-full">
+        <div id="result-icon" class="w-32 h-32 mx-auto rounded-full flex items-center justify-center mb-6 text-5xl bounce-in"></div>
+        <h2 id="result-title" class="text-4xl font-800 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2"></h2>
+        <p id="result-subtitle" class="text-lg text-gray-600 mb-8"></p>
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl p-8 mb-8 border-2 border-indigo-200">
+        <div class="text-6xl font-800 text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text mb-2" id="final-score"></div>
+        <p class="text-lg font-600 text-gray-600">Điểm số của bạn</p>
+        <div class="flex justify-center gap-12 mt-6 text-center">
+        <div class="p-4 bg-white rounded-2xl border-2 border-green-200 flex-1"><span class="font-700 text-3xl text-green-600" id="correct-count">0</span><br><span class="text-sm font-600 text-gray-600">Trả lời đúng</span>
+        </div>
+        <div class="p-4 bg-white rounded-2xl border-2 border-red-200 flex-1"><span class="font-700 text-3xl text-red-500" id="wrong-count">0</span><br><span class="text-sm font-600 text-gray-600">Trả lời sai</span>
+        </div>
+        </div>
+        </div>
+        <div class="flex gap-3 flex-col sm:flex-row"><button onclick="location.reload()" class="flex-1 border-2 border-gray-400 hover:bg-gray-50 text-gray-700 font-600 py-3.5 rounded-xl transition-all active:scale-95"> <i data-lucide="home" class="inline w-4 h-4 mr-2"></i> Trang chủ </button> <button onclick="startGame()" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-700 py-3.5 rounded-xl transition-all active:scale-95 shadow-lg"> <i data-lucide="redo-2" class="inline w-4 h-4 mr-2"></i> Chơi lại </button>
+        </div>
+    </div><!-- Instructions Modal -->
+    <div id="instructions-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90%] overflow-y-auto card-enter">
+        <div class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl font-800 text-gray-900">📖 Cách chơi</h2><button onclick="closeInstructions()" class="text-gray-500 hover:text-gray-700"> <i data-lucide="x" class="w-6 h-6"></i> </button>
+        </div>
+        <div class="space-y-6 text-left">
+        <div class="bg-blue-50 rounded-2xl p-4 border-l-4 border-blue-500">
+        <h3 class="font-700 text-blue-900 mb-2">🎯 Mục đích</h3>
+        <p class="text-blue-800">Trả lời đúng 20 câu hỏi về Cấu trúc dữ liệu &amp; Giải thuật để kiểm tra kiến thức lập trình C của bạn.</p>
+        </div>
+        <div class="bg-purple-50 rounded-2xl p-4 border-l-4 border-purple-500">
+        <h3 class="font-700 text-purple-900 mb-2">⏱️ Thời gian</h3>
+        <p class="text-purple-800">Bạn có 20 giây cho mỗi câu hỏi. Trả lời càng nhanh, điểm bonus càng cao!</p>
+        </div>
+        <div class="bg-green-50 rounded-2xl p-4 border-l-4 border-green-500">
+        <h3 class="font-700 text-green-900 mb-2">🎁 Tính điểm</h3>
+        <ul class="text-green-800 space-y-1 text-sm">
+            <li>✓ Trả lời đúng: 10 điểm cơ bản</li>
+            <li>✓ Trả lời trong 10 giây: +5 điểm bonus</li>
+            <li>✗ Trả lời sai: 0 điểm</li>
+            <li>✗ Hết giờ: 0 điểm</li>
+        </ul>
+        </div>
+        <div class="bg-orange-50 rounded-2xl p-4 border-l-4 border-orange-500">
+        <h3 class="font-700 text-orange-900 mb-2">🏆 Xếp hạng kết quả</h3>
+        <ul class="text-orange-800 space-y-1 text-sm">
+            <li>⭐ 80% trở lên: "Xuất sắc! Bạn nắm vững kiến thức"</li>
+            <li>👍 50-79%: "Khá tốt! Cần ôn thêm một chút"</li>
+            <li>📖 Dưới 50%: "Cần cố gắng thêm! Hãy xem lại bài"</li>
+        </ul>
+        </div>
+        <div class="bg-indigo-50 rounded-2xl p-4 border-l-4 border-indigo-500">
+        <h3 class="font-700 text-indigo-900 mb-2">💡 Mẹo chơi</h3>
+        <p class="text-indigo-800 text-sm">Chọn câu trả lời bằng cách nhấp vào đáp án. Khi bạn chọn, hệ thống sẽ hiển thị ngay kết quả đúng/sai với âm thanh và hiệu ứng trực quan.</p>
+        </div>
+        </div><button onclick="closeInstructions()" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-700 py-3 rounded-xl transition-all"> Hiểu rồi! Đóng </button>
+        </div>
+    </div>
+    </div>
+    <!-- CHỈ THAY PHẦN SCRIPT CŨ BẰNG SCRIPT NÀY -->
+
+    <script>        const questions = [
+    {
+        q:"Trong Windows Forms, control nào thường được sử dụng để nhập dữ liệu dạng văn bản?",
+        opts:["Label","TextBox","Panel","PictureBox"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính nào của TextBox dùng để lấy hoặc thiết lập nội dung văn bản?",
+        opts:["Name","Text","Tag","Size"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính Name của một control dùng để làm gì?",
+        opts:["Đặt màu nền","Xác định tên của control trong mã C#","Đặt kích thước","Đặt vị trí"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính Tag của control thường được dùng để làm gì?",
+        opts:["Lưu dữ liệu phụ tùy ý","Thiết lập chiều rộng","Thiết lập màu chữ","Thiết lập vị trí"],
+        ans:0
+    },
+
+    {
+        q:"Muốn lấy nội dung người dùng nhập vào TextBox có tên txt_mssv, biểu thức nào đúng?",
+        opts:["txt_mssv.Name","txt_mssv.Text","txt_mssv.Tag","txt_mssv.Size"],
+        ans:1
+    },
+
+    {
+        q:"Muốn xóa nội dung của TextBox, phương thức nào có thể được sử dụng?",
+        opts:["Clear()","Delete()","RemoveText()","ResetTextBox()"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính nào xác định chiều rộng của một control?",
+        opts:["Height","Width","Left","Top"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính nào xác định chiều cao của một control?",
+        opts:["Width","Left","Height","Top"],
+        ans:2
+    },
+
+    {
+        q:"Thuộc tính Size của control chứa thông tin gì?",
+        opts:["Vị trí","Màu sắc","Chiều rộng và chiều cao","Tên control"],
+        ans:2
+    },
+
+    {
+        q:"Kiểu dữ liệu thường được sử dụng với thuộc tính Size là gì?",
+        opts:["Point","Size","Color","Font"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính Left của control biểu thị điều gì?",
+        opts:["Khoảng cách từ cạnh trái của container","Chiều rộng control","Chiều cao control","Khoảng cách từ cạnh dưới"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính Top của control biểu thị điều gì?",
+        opts:["Chiều rộng","Khoảng cách từ phía trên của container","Chiều cao","Khoảng cách từ bên phải"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính Location dùng để xác định điều gì?",
+        opts:["Màu nền","Tên control","Vị trí của control","Trạng thái control"],
+        ans:2
+    },
+
+    {
+        q:"Kiểu dữ liệu của thuộc tính Location thường là gì?",
+        opts:["Point","Size","Color","Font"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nbutton1.Location = new Point(100, 50);\n\nControl sẽ được đặt tại vị trí nào?",
+        opts:["X=50, Y=100","X=100, Y=50","Width=100, Height=50","Left=50, Top=100"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính Anchor của control dùng để làm gì?",
+        opts:["Cố định quan hệ vị trí với các cạnh của container","Đặt màu nền","Đặt nội dung","Ẩn control"],
+        ans:0
+    },
+
+    {
+        q:"Khi Form thay đổi kích thước, Anchor có tác dụng chính là gì?",
+        opts:["Thay đổi Font","Duy trì khoảng cách với các cạnh được neo","Xóa control","Đổi màu control"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính Dock của control dùng để làm gì?",
+        opts:["Neo control vào một cạnh hoặc toàn bộ vùng container","Đặt tên control","Đặt màu chữ","Khóa nhập liệu"],
+        ans:0
+    },
+
+    {
+        q:"Nếu đặt Dock = Fill cho TextBox, điều gì thường xảy ra?",
+        opts:["TextBox bị ẩn","TextBox chiếm vùng còn lại của container","TextBox chỉ chiếm chiều cao","TextBox bị khóa"],
+        ans:1
+    },
+
+    {
+        q:"Điểm khác nhau cơ bản giữa Anchor và Dock là gì?",
+        opts:["Anchor liên quan đến cạnh, Dock liên quan đến vùng bố trí","Anchor dùng cho màu, Dock dùng cho Font","Hai thuộc tính hoàn toàn giống nhau","Dock chỉ dùng cho TextBox"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính nào dùng để thiết lập màu nền của control?",
+        opts:["ForeColor","BackColor","Font","TextAlign"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính ForeColor dùng để thiết lập gì?",
+        opts:["Màu nền","Màu chữ hoặc màu nội dung phía trước","Kích thước","Vị trí"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính Font của control dùng để thiết lập gì?",
+        opts:["Kiểu và kích thước chữ","Màu nền","Vị trí","Trạng thái"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính TextAlign của control dùng để làm gì?",
+        opts:["Căn chỉnh nội dung văn bản","Đổi màu nền","Đặt kích thước","Ẩn control"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính Enabled của control dùng để làm gì?",
+        opts:["Xác định control có được phép tương tác hay không","Xác định màu chữ","Xác định vị trí","Xác định tên"],
+        ans:0
+    },
+
+    {
+        q:"Nếu button1.Enabled = false thì điều gì xảy ra?",
+        opts:["Button bị xóa","Button không cho người dùng tương tác","Button bị ẩn","Button đổi màu"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính Visible dùng để làm gì?",
+        opts:["Thiết lập control có được hiển thị hay không","Thiết lập màu chữ","Thiết lập kích thước","Thiết lập Font"],
+        ans:0
+    },
+
+    {
+        q:"Nếu txt_mssv.Visible = false thì điều gì xảy ra?",
+        opts:["TextBox bị khóa","TextBox không hiển thị","TextBox bị xóa dữ liệu","TextBox đổi màu"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính ReadOnly của TextBox dùng để làm gì?",
+        opts:["Ẩn TextBox","Không cho người dùng chỉnh sửa trực tiếp nội dung","Xóa nội dung","Đổi màu nền"],
+        ans:1
+    },
+
+    {
+        q:"Nếu đặt txt_mssv.ReadOnly = true thì người dùng có thể làm gì?",
+        opts:["Chỉnh sửa nội dung","Không thể chỉnh sửa nội dung trực tiếp","Xóa TextBox","Thay đổi Name"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính TabIndex dùng để làm gì?",
+        opts:["Xác định thứ tự di chuyển giữa các control bằng phím Tab","Xác định màu nền","Xác định kích thước","Xác định vị trí chuột"],
+        ans:0
+    },
+
+    {
+        q:"Control có TabIndex nhỏ hơn thường được nhận Focus trước khi nhấn phím Tab?",
+        opts:["Đúng","Sai","Chỉ khi Visible=false","Chỉ khi Enabled=false"],
+        ans:0
+    },
+
+    {
+        q:"Trong Windows Forms, Button thường được sử dụng để làm gì?",
+        opts:["Hiển thị bảng dữ liệu","Thực hiện một hành động khi người dùng nhấn","Lưu hình ảnh","Nhập văn bản dài"],
+        ans:1
+    },
+
+    {
+        q:"Sự kiện nào thường được sử dụng khi người dùng nhấn Button?",
+        opts:["Load","Click","Resize","Paint"],
+        ans:1
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nprivate void btn_add_Click(object sender, EventArgs e)\n{\n    MessageBox.Show(\"Hello\");\n}\n\nĐoạn mã trên được thực hiện khi nào?",
+        opts:["Khi Form đóng","Khi Button được nhấn","Khi TextBox mất Focus","Khi Form thay đổi kích thước"],
+        ans:1
+    },
+
+    {
+        q:"MessageBox.Show() thường được dùng để làm gì?",
+        opts:["Hiển thị hộp thoại thông báo","Kết nối database","Tạo DataGridView","Xóa database"],
+        ans:0
+    },
+
+    {
+        q:"Control nào phù hợp để hiển thị danh sách dữ liệu dạng bảng?",
+        opts:["TextBox","Button","DataGridView","Label"],
+        ans:2
+    },
+
+    {
+        q:"Thuộc tính nào của DataGridView được dùng để gán nguồn dữ liệu?",
+        opts:["DataSource","Text","Value","Content"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nDataTable student = new DataTable();\ndgvStudent.DataSource = student;\n\nDòng lệnh cuối có tác dụng gì?",
+        opts:["Xóa DataGridView","Gán DataTable làm nguồn dữ liệu","Tạo database","Đóng DataGridView"],
+        ans:1
+    },
+
+    {
+        q:"DataTable thường được sử dụng để làm gì trong ứng dụng Windows Forms?",
+        opts:["Lưu dữ liệu dạng bảng trong bộ nhớ","Tạo Button","Đặt màu nền","Xử lý sự kiện Click"],
+        ans:0
+    },
+
+    {
+        q:"SqlDataAdapter thường được sử dụng để làm gì?",
+        opts:["Lấy dữ liệu từ database và đổ vào DataTable","Tạo Button","Thiết lập Font","Xử lý phím Tab"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nstring sql = \"SELECT * FROM Student\";\nSqlDataAdapter adapter = new SqlDataAdapter(sql, conn);\nDataTable student = new DataTable();\nadapter.Fill(student);\n\nPhương thức Fill() có tác dụng gì?",
+        opts:["Xóa dữ liệu","Đổ dữ liệu truy vấn vào DataTable","Đóng kết nối","Tạo bảng SQL"],
+        ans:1
+    },
+
+    {
+        q:"Trong câu lệnh SELECT, ký hiệu * có ý nghĩa gì?",
+        opts:["Chỉ lấy khóa chính","Lấy tất cả các cột","Xóa tất cả dữ liệu","Sắp xếp dữ liệu"],
+        ans:1
+    },
+
+    {
+        q:"Sự kiện nào của DataGridView thường được dùng để xử lý khi người dùng chọn một ô?",
+        opts:["CellClick","Load","ClickButton","TextChanged"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nprivate void dgvStudent_CellClick(object sender, DataGridViewCellEventArgs e)\n{\n    txt_mssv.Text = dgvStudent.Rows[e.RowIndex].Cells[\"MSSV\"].Value.ToString();\n}\n\nĐoạn mã trên dùng để làm gì?",
+        opts:["Xóa sinh viên","Đưa MSSV của dòng được chọn lên TextBox","Thêm sinh viên","Đóng DataGridView"],
+        ans:1
+    },
+
+    {
+        q:"Trong DataGridView, RowIndex thường dùng để xác định điều gì?",
+        opts:["Vị trí của dòng đang được xử lý","Tên database","Chiều rộng Form","Tên Button"],
+        ans:0
+    },
+
+    {
+        q:"CRUD là viết tắt của bốn thao tác nào?",
+        opts:["Create, Read, Update, Delete","Connect, Run, Update, Data","Create, Run, Upload, Delete","Copy, Read, Use, Download"],
+        ans:0
+    },
+
+    {
+        q:"Trong CRUD, thao tác Create tương ứng với chức năng nào?",
+        opts:["Đọc dữ liệu","Thêm dữ liệu","Sửa dữ liệu","Xóa dữ liệu"],
+        ans:1
+    },
+
+    {
+        q:"Trong CRUD, thao tác Read thường tương ứng với câu lệnh SQL nào?",
+        opts:["INSERT","UPDATE","SELECT","DELETE"],
+        ans:2
+    },
+
+    {
+        q:"Trong CRUD, thao tác Update tương ứng với câu lệnh SQL nào?",
+        opts:["SELECT","UPDATE","INSERT","DELETE"],
+        ans:1
+    },
+
+    {
+        q:"Trong CRUD, thao tác Delete tương ứng với câu lệnh SQL nào?",
+        opts:["DELETE","SELECT","INSERT","UPDATE"],
+        ans:0
+    },
+
+    {
+        q:"Câu lệnh SQL nào dùng để thêm một sinh viên mới?",
+        opts:["INSERT","SELECT","UPDATE","DELETE"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nstring sql = \"INSERT INTO Student(MSSV, Ho, Ten) VALUES (@MSSV, @Ho, @Ten)\";\n\nMục đích chính của câu lệnh trên là gì?",
+        opts:["Lấy dữ liệu sinh viên","Thêm sinh viên vào bảng Student","Xóa sinh viên","Cập nhật database"],
+        ans:1
+    },
+
+    {
+        q:"Lớp nào được sử dụng để thực thi câu lệnh SQL trong C#?",
+        opts:["SqlConnection","SqlCommand","SqlDataReader","DataTable"],
+        ans:1
+    },
+
+    {
+        q:"Phương thức nào thường được dùng để thực thi INSERT, UPDATE hoặc DELETE?",
+        opts:["Fill()","ExecuteNonQuery()","Read()","ExecuteTable()"],
+        ans:1
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nSqlCommand cmd = new SqlCommand(sql, conn);\ncmd.ExecuteNonQuery();\n\nExecuteNonQuery() thường trả về thông tin gì?",
+        opts:["Số dòng bị ảnh hưởng","DataTable","Tên bảng","SqlConnection"],
+        ans:0
+    },
+
+    {
+        q:"Câu lệnh SQL nào dùng để sửa thông tin sinh viên?",
+        opts:["SELECT","INSERT","UPDATE","DELETE"],
+        ans:2
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nUPDATE Student\nSET Ho = @Ho, Ten = @Ten\nWHERE MSSV = @MSSV\n\nĐiều kiện WHERE có tác dụng gì?",
+        opts:["Xác định bản ghi cần cập nhật","Tạo bảng mới","Xóa toàn bộ bảng","Đổi tên database"],
+        ans:0
+    },
+
+    {
+        q:"Câu lệnh SQL nào dùng để xóa một sinh viên?",
+        opts:["UPDATE","DELETE","INSERT","SELECT"],
+        ans:1
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nDELETE FROM Student\nWHERE MSSV = @MSSV\n\nNếu bỏ WHERE thì nguy cơ nào có thể xảy ra?",
+        opts:["Không xóa được dữ liệu","Có thể xóa toàn bộ dữ liệu trong bảng","Chỉ xóa một cột","Database tự động đóng"],
+        ans:1
+    },
+
+    {
+        q:"SqlConnection có vai trò chính là gì?",
+        opts:["Thực hiện câu lệnh SQL","Kết nối ứng dụng với SQL Server","Hiển thị dữ liệu","Tạo giao diện"],
+        ans:1
+    },
+
+    {
+        q:"Trước khi thực hiện SqlCommand, SqlConnection thường cần được mở bằng phương thức nào?",
+        opts:["Start()","Open()","Run()","Connect()"],
+        ans:1
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nusing var conn = Database.GetConnection();\nconn.Open();\n\nDatabase.GetConnection() có vai trò gì trong đoạn mã?",
+        opts:["Tạo hoặc lấy đối tượng kết nối database","Tạo DataGridView","Xóa dữ liệu","Hiển thị MessageBox"],
+        ans:0
+    },
+
+    {
+        q:"Tại sao nên sử dụng using với SqlConnection?",
+        opts:["Giúp tự động giải phóng tài nguyên","Giúp tạo database","Giúp tăng kích thước Form","Giúp đổi màu control"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nusing var conn = Database.GetConnection();\nconn.Open();\nSqlCommand cmd = new SqlCommand(sql, conn);\n\nSqlCommand cần conn để làm gì?",
+        opts:["Biết kết nối SQL Server cần sử dụng","Đặt tên cho Button","Tạo TextBox","Đặt màu nền"],
+        ans:0
+    },
+
+    {
+        q:"Tham số SQL như @MSSV có lợi ích quan trọng nào?",
+        opts:["Giúp truyền dữ liệu an toàn và hạn chế SQL Injection","Làm Form đẹp hơn","Tăng kích thước TextBox","Thay thế DataGridView"],
+        ans:0
+    },
+
+    {
+        q:"Câu lệnh nào đúng để truyền giá trị cho tham số @MSSV?",
+        opts:["cmd.Parameters.AddWithValue(\"@MSSV\", txt_mssv.Text)","cmd.Value(\"@MSSV\", txt_mssv.Text)","cmd.Add(\"@MSSV\", txt_mssv.Text)","cmd.Parameter(\"@MSSV\")"],
+        ans:0
+    },
+
+    {
+        q:"Nếu muốn cập nhật DataGridView sau khi thêm sinh viên thành công, thường gọi hàm nào?",
+        opts:["ClearData()","loadData()","CloseData()","RefreshDatabase()"],
+        ans:1
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nMessageBox.Show(\"Thêm sinh viên thành công\");\nloadData();\n\nMục đích của loadData() sau khi INSERT là gì?",
+        opts:["Đóng SQL Server","Tải lại dữ liệu để DataGridView hiển thị thay đổi","Xóa TextBox","Xóa database"],
+        ans:1
+    },
+
+    {
+        q:"Nếu muốn xóa nội dung của ba TextBox sau khi thêm thành công, cách nào phù hợp?",
+        opts:["Gọi Clear() cho từng TextBox","Gọi DeleteDatabase()","Gọi Close() cho Form","Gọi ExecuteReader()"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nprivate void ClearInput()\n{\n    txt_mssv.Clear();\n    txt_lastName.Clear();\n    txt_FirstName.Clear();\n}\n\nMục đích của hàm ClearInput() là gì?",
+        opts:["Xóa dữ liệu trong các ô nhập","Xóa database","Xóa DataGridView","Xóa bảng Student"],
+        ans:0
+    },
+
+    {
+        q:"Khi chọn một dòng DataGridView để sửa, dữ liệu thường được đưa lên đâu?",
+        opts:["TextBox","Database trực tiếp","PictureBox","Panel"],
+        ans:0
+    },
+
+    {
+        q:"Để xác định bản ghi cần sửa hoặc xóa, trường nào thường được sử dụng?",
+        opts:["Màu nền","Khóa định danh như MSSV","Font","TabIndex"],
+        ans:1
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nif (row > 0)\n{\n    MessageBox.Show(\"Thành công\");\n}\n\nBiến row thường biểu thị điều gì sau ExecuteNonQuery()?",
+        opts:["Số dòng bị ảnh hưởng","Số cột DataGridView","Chiều rộng Form","Số Button"],
+        ans:0
+    },
+
+    {
+        q:"Nếu UPDATE không tìm thấy MSSV phù hợp với WHERE, ExecuteNonQuery() thường trả về giá trị nào?",
+        opts:["0","1","-1","100"],
+        ans:0
+    },
+
+    {
+        q:"Nếu DELETE thành công một bản ghi, ExecuteNonQuery() thường trả về giá trị nào?",
+        opts:["0","1","-1","null"],
+        ans:1
+    },
+
+    {
+        q:"Tại sao nên kiểm tra dữ liệu TextBox trước khi thực hiện INSERT?",
+        opts:["Để tránh dữ liệu rỗng hoặc không hợp lệ","Để đổi màu Button","Để tăng kích thước Form","Để tạo DataGridView"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính nào của TextBox có thể được dùng để ngăn người dùng sửa MSSV sau khi chọn dữ liệu?",
+        opts:["ReadOnly","Visible","Dock","ForeColor"],
+        ans:0
+    },
+
+    {
+        q:"Nếu MSSV là khóa chính và không cho phép sửa, cách thiết kế nào phù hợp?",
+        opts:["Đặt TextBox MSSV ở chế độ ReadOnly","Ẩn toàn bộ Form","Xóa DataGridView","Đặt Button Enabled=false"],
+        ans:0
+    },
+
+    {
+        q:"Trong Windows Forms, thuộc tính Text của Button thường dùng để làm gì?",
+        opts:["Xác định nội dung hiển thị trên Button","Xác định tên biến C#","Xác định chiều cao","Xác định vị trí"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính Name và Text của Button khác nhau như thế nào?",
+        opts:["Name dùng trong mã, Text là nội dung hiển thị","Name là màu, Text là Font","Name là kích thước, Text là vị trí","Hai thuộc tính hoàn toàn giống nhau"],
+        ans:0
+    },
+
+    {
+        q:"Nếu Button có Name là btn_addStudent và Text là Thêm sinh viên, trong code thường dùng tên nào?",
+        opts:["Thêm sinh viên","btn_addStudent","ButtonAdd","Text"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính BackColor của Button dùng để làm gì?",
+        opts:["Đặt màu nền","Đặt màu chữ","Đặt Font","Đặt vị trí"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính ForeColor của Button dùng để làm gì?",
+        opts:["Đặt màu nền","Đặt màu chữ","Đặt kích thước","Đặt vị trí"],
+        ans:1
+    },
+
+    {
+        q:"Thuộc tính Font có thể thay đổi những yếu tố nào?",
+        opts:["Tên Font, kiểu chữ và kích thước chữ","Vị trí và kích thước control","Tên và Tag","Màu nền và vị trí"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính TextAlign của Button có thể dùng để làm gì?",
+        opts:["Căn vị trí nội dung trên Button","Đổi tên Button","Khóa Button","Ẩn Button"],
+        ans:0
+    },
+
+    {
+        q:"Nếu muốn Button không thể được nhấn trong một trạng thái nào đó, thuộc tính nào phù hợp?",
+        opts:["Enabled","Visible","TextAlign","Tag"],
+        ans:0
+    },
+
+    {
+        q:"Nếu muốn tạm thời ẩn Button khỏi giao diện, thuộc tính nào phù hợp?",
+        opts:["ReadOnly","Visible","Enabled","TabIndex"],
+        ans:1
+    },
+
+    {
+        q:"Điểm khác nhau giữa Enabled = false và Visible = false là gì?",
+        opts:["Enabled vẫn hiển thị nhưng không tương tác, Visible=false làm control không hiển thị","Hai thuộc tính hoàn toàn giống nhau","Visible chỉ ảnh hưởng màu chữ","Enabled dùng để thay đổi vị trí"],
+        ans:0
+    },
+
+    {
+        q:"Trong giao diện Windows Forms, Size có thể được biểu diễn bởi Width và Height như thế nào?",
+        opts:["Size = Width + Height","Size chứa Width và Height","Size chỉ chứa Width","Size chỉ chứa Height"],
+        ans:1
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nbutton1.Size = new Size(120, 40);\n\nGiá trị 120 và 40 lần lượt biểu thị điều gì?",
+        opts:["Left và Top","Width và Height","Top và Left","X và Y"],
+        ans:1
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nbutton1.Left = 50;\nbutton1.Top = 30;\n\nControl được đặt ở vị trí nào?",
+        opts:["X=50, Y=30","Width=50, Height=30","X=30, Y=50","Width=30, Height=50"],
+        ans:0
+    },
+
+    {
+        q:"Nếu muốn thay đổi cả vị trí X và Y của control bằng một thuộc tính, nên sử dụng thuộc tính nào?",
+        opts:["Size","Location","Font","Tag"],
+        ans:1
+    },
+
+    {
+        q:"Nếu muốn control luôn giữ khoảng cách với cạnh phải và cạnh dưới của Form khi Form thay đổi kích thước, thuộc tính nào phù hợp?",
+        opts:["Anchor","Dock","TabIndex","TextAlign"],
+        ans:0
+    },
+
+    {
+        q:"Nếu đặt một Panel có Dock = Top, Panel sẽ được bố trí như thế nào?",
+        opts:["Chiếm vùng phía trên container","Chiếm toàn bộ container","Nằm bên trái","Nằm bên phải"],
+        ans:0
+    },
+
+    {
+        q:"Nếu đặt DataGridView Dock = Fill trong một Panel, mục đích thường là gì?",
+        opts:["Cho DataGridView chiếm vùng còn lại của Panel","Ẩn DataGridView","Khóa DataGridView","Đổi màu DataGridView"],
+        ans:0
+    },
+
+    {
+        q:"Thuộc tính nào phù hợp để lưu một mã hoặc giá trị phụ liên quan đến control mà không cần tạo thêm control?",
+        opts:["Tag","Width","Height","Location"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nbutton1.Tag = 1001;\n\nGiá trị 1001 được lưu ở đâu?",
+        opts:["Text","Name","Tag","Size"],
+        ans:2
+    },
+
+    {
+        q:"Trong Windows Forms, Focus của một control có ý nghĩa gì?",
+        opts:["Control đang nhận thao tác nhập liệu hoặc bàn phím","Control bị ẩn","Control bị xóa","Control đang kết nối database"],
+        ans:0
+    },
+
+    {
+        q:"Phương thức Focus() của TextBox thường được sử dụng để làm gì?",
+        opts:["Đưa con trỏ nhập liệu vào TextBox","Xóa TextBox","Ẩn TextBox","Đổi màu TextBox"],
+        ans:0
+    },
+
+    {
+        q:"Sau khi xóa dữ liệu, gọi txt_mssv.Focus() thường nhằm mục đích gì?",
+        opts:["Đưa con trỏ trở lại ô MSSV để nhập dữ liệu","Xóa database","Đóng Form","Đổi kích thước TextBox"],
+        ans:0
+    },
+
+    {
+        q:"Trong một ứng dụng CRUD, chức năng Read thường có thể hiển thị dữ liệu lên control nào?",
+        opts:["DataGridView","Button","Label duy nhất","PictureBox"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nstring sql = \"SELECT * FROM Student\";\nusing var conn = Database.GetConnection();\nSqlDataAdapter adapter = new SqlDataAdapter(sql, conn);\nDataTable table = new DataTable();\nadapter.Fill(table);\ndgvStudent.DataSource = table;\n\nĐoạn mã trên thực hiện chức năng nào?",
+        opts:["Thêm sinh viên","Đọc và hiển thị danh sách sinh viên","Xóa sinh viên","Sửa sinh viên"],
+        ans:1
+    },
+
+    {
+        q:"Khi sử dụng SqlDataAdapter để Fill DataTable, có nhất thiết phải gọi conn.Open() trước đó trong trường hợp thông thường không?",
+        opts:["Có, luôn luôn bắt buộc","Không, adapter có thể tự quản lý mở và đóng kết nối khi Fill","Chỉ khi có INSERT","Chỉ khi có DELETE"],
+        ans:1
+    },
+
+    {
+        q:"Nếu muốn thực hiện SELECT và nhận về một giá trị duy nhất như COUNT(*), phương thức nào phù hợp?",
+        opts:["ExecuteScalar()","ExecuteNonQuery()","FillButton()","ExecuteTable()"],
+        ans:0
+    },
+
+    {
+        q:"Nếu muốn lấy nhiều dòng dữ liệu để đưa vào DataTable, đối tượng nào phù hợp hơn?",
+        opts:["SqlDataAdapter","Button","SqlConnection đơn thuần","MessageBox"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nstring sql = \"SELECT * FROM Student\";\n\nĐây là câu lệnh thuộc thao tác CRUD nào?",
+        opts:["Create","Read","Update","Delete"],
+        ans:1
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nstring sql = \"UPDATE Student SET Ho=@Ho WHERE MSSV=@MSSV\";\n\nĐây là thao tác CRUD nào?",
+        opts:["Create","Read","Update","Delete"],
+        ans:2
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nstring sql = \"DELETE FROM Student WHERE MSSV=@MSSV\";\n\nĐây là thao tác CRUD nào?",
+        opts:["Create","Read","Update","Delete"],
+        ans:3
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nstring sql = \"INSERT INTO Student(MSSV, Ho, Ten) VALUES(@MSSV,@Ho,@Ten)\";\n\nĐây là thao tác CRUD nào?",
+        opts:["Read","Delete","Create","Update"],
+        ans:2
+    },
+
+    {
+        q:"Khi dùng chung phần mở kết nối và ExecuteNonQuery cho INSERT, UPDATE, DELETE, lợi ích chính là gì?",
+        opts:["Giảm lặp code và dễ bảo trì","Làm SQL không cần thiết","Xóa được database","Không cần tham số"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\npublic static int ExecuteSqlAll(string sql, Action<SqlCommand> parameter)\n{\n    using var conn = Database.GetConnection();\n    conn.Open();\n    SqlCommand cmd = new SqlCommand(sql, conn);\n    parameter(cmd);\n    return cmd.ExecuteNonQuery();\n}\n\nTham số Action<SqlCommand> được dùng để làm gì?",
+        opts:["Cho phép cấu hình tham số cho SqlCommand","Tạo DataGridView","Đóng Form","Đổi màu Button"],
+        ans:0
+    },
+
+    {
+        q:"Vì sao hàm ExecuteSqlAll có thể trả về int?",
+        opts:["Vì ExecuteNonQuery trả về số dòng bị ảnh hưởng","Vì SqlConnection là int","Vì DataGridView trả về int","Vì TextBox luôn trả về int"],
+        ans:0
+    },
+
+    {
+        q:"Nếu một hàm được khai báo trả về int nhưng có một nhánh xử lý không return giá trị, lỗi nào có thể xảy ra?",
+        opts:["The type is invalid","Not all code paths return a value","Database not found","Invalid Form"],
+        ans:1
+    },
+
+    {
+        q:"Nếu bắt Exception trong ExecuteSqlAll và không ném lỗi ra ngoài, một cách xử lý có thể là gì?",
+        opts:["Hiển thị lỗi và trả về giá trị biểu thị thất bại","Xóa database","Đóng toàn bộ Windows","Xóa SqlCommand"],
+        ans:0
+    },
+
+    {
+        q:"Trong ứng dụng CRUD, việc tách hàm loadData() riêng có lợi ích gì?",
+        opts:["Có thể tái sử dụng khi cần tải lại dữ liệu","Làm mất database","Không cần SQL","Không cần DataGridView"],
+        ans:0
+    },
+
+    {
+        q:"Khi người dùng chọn một dòng và nhấn nút Xóa, bước nào nên được thực hiện trước khi DELETE?",
+        opts:["Xác nhận bản ghi hoặc yêu cầu người dùng xác nhận","Đóng ứng dụng","Xóa DataGridView trước","Xóa database"],
+        ans:0
+    },
+
+    {
+        q:"MessageBoxButtons.YesNo thường được sử dụng trong trường hợp nào?",
+        opts:["Yêu cầu người dùng xác nhận một hành động","Kết nối SQL Server","Tạo bảng","Đọc DataTable"],
+        ans:0
+    },
+
+    {
+        q:"Nếu người dùng chọn No trong hộp thoại xác nhận xóa, chương trình nên làm gì?",
+        opts:["Tiếp tục DELETE","Dừng thao tác xóa","Xóa toàn bộ bảng","Đóng SQL Server"],
+        ans:1
+    },
+
+    {
+        q:"Trong Windows Forms, Publish được sử dụng chủ yếu để làm gì?",
+        opts:["Đóng gói ứng dụng để triển khai","Tạo TextBox","Thiết kế DataGridView","Tạo câu lệnh SELECT"],
+        ans:0
+    },
+
+    {
+        q:"Trong Visual Studio, Publish thường được thực hiện ở đâu đối với project hỗ trợ triển khai?",
+        opts:["Từ project hoặc menu Build/Publish","Trong MessageBox","Trong SQL Server","Trong DataGridView"],
+        ans:0
+    },
+
+    {
+        q:"Khi Publish ứng dụng Windows Forms cho máy Windows 64-bit, Runtime Identifier thường được chọn là gì?",
+        opts:["linux-x64","win-x64","macos-arm64","android-x64"],
+        ans:1
+    },
+
+    {
+        q:"Deployment Mode Self-contained có đặc điểm gì?",
+        opts:["Ứng dụng đi kèm runtime cần thiết của .NET","Chỉ chứa file SQL","Không chứa chương trình","Chỉ chạy trên Linux"],
+        ans:0
+    },
+
+    {
+        q:"Deployment Mode Framework-dependent có đặc điểm gì?",
+        opts:["Máy chạy thường cần có .NET Runtime phù hợp","Luôn chứa toàn bộ Windows","Không cần runtime","Chỉ dùng cho SQL Server"],
+        ans:0
+    },
+
+    {
+        q:"Tùy chọn Produce single file khi Publish có mục đích gì?",
+        opts:["Đóng gói ứng dụng thành một file thực thi chính","Xóa tất cả DLL","Tạo database","Tạo DataGridView"],
+        ans:0
+    },
+
+    {
+        q:"Nếu Publish ứng dụng WinForms dạng Self-contained cho Windows x64, mục tiêu chính là gì?",
+        opts:["Giúp ứng dụng có thể chạy trên máy Windows x64 mà không phụ thuộc việc cài sẵn .NET Runtime tương ứng","Giúp SQL Server tự tạo database","Giúp DataGridView tự tạo cột","Giúp TextBox tự nhập dữ liệu"],
+        ans:0
+    },
+
+    {
+        q:"Khi chuyển file EXE của ứng dụng CRUD sang máy khác, yếu tố nào vẫn cần được kiểm tra?",
+        opts:["Kết nối tới SQL Server và database","Màu của Button","Font của Label","TabIndex của TextBox"],
+        ans:0
+    },
+
+    {
+        q:"Nếu ứng dụng WinForms kết nối đến SQL Server trên một máy chủ khác, Connection String cần chứa thông tin quan trọng nào?",
+        opts:["Địa chỉ hoặc tên SQL Server","Màu nền Form","Tên Button","Vị trí TextBox"],
+        ans:0
+    },
+
+    {
+        q:"Cho đoạn mã:\n\nServer=192.168.1.100;Database=QLSinhVien;...\n\nĐịa chỉ 192.168.1.100 trong trường hợp này thường biểu thị gì?",
+        opts:["Địa chỉ máy chủ SQL Server","Địa chỉ TextBox","Tên bảng","Tên Button"],
+        ans:0
+    },
+
+    {
+        q:"Trong ứng dụng Windows Forms có database, tại sao chỉ copy file EXE sang máy khác đôi khi chưa đủ?",
+        opts:["Vì ứng dụng còn phụ thuộc vào cấu hình và khả năng kết nối database","Vì EXE không thể chạy trên Windows","Vì Button cần SQL Server","Vì TextBox cần DataGridView"],
+        ans:0
+    },
+
+    {
+        q:"Một quy trình CRUD hoàn chỉnh trong Windows Forms thường bao gồm thành phần nào?",
+        opts:["Giao diện, xử lý sự kiện, SQL và kết nối database","Chỉ Button","Chỉ DataGridView","Chỉ TextBox"],
+        ans:0
+    }
+];
+    let currentQ = 0;
+    let score = 0;
+    let correct = 0;
+    let wrong = 0;
+    let timer = null;
+    let timeLeft = 20;
+    let shuffled = [];
+    let feedbackElement = null;
+    let isPaused = false;
+    
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playSound(freq, dur, type='sine') {
+        try {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+    
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+    
+        osc.frequency.value = freq;
+        osc.type = type;
+    
+        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(
+            0.01,
+            audioContext.currentTime + dur
+        );
+    
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + dur);
+    
+        } catch(e) {
+        console.log(e);
+        }
+    }
+    
+    function playCorrectSound(){
+        playSound(800,0.2);
+        playSound(1000,0.2);
+    }
+    
+    function playWrongSound(){
+        playSound(300,0.15);
+    }
+    
+    function shuffle(arr){
+        let a=[...arr];
+    
+        for(let i=a.length-1;i>0;i--){
+        let j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+        }
+    
+        return a;
+    }
+    
+    function showInstructions(){
+        document.getElementById('instructions-modal')
+        .classList.remove('hidden');
+    }
+    
+    function closeInstructions(){
+        document.getElementById('instructions-modal')
+        .classList.add('hidden');
+    }
+    
+    function createConfetti(){
+    
+        for(let i=0;i<20;i++){
+    
+        const conf=document.createElement('div');
+    
+        conf.className='confetti';
+    
+        conf.innerHTML=['🎉','✨','🌟','⭐','🎊']
+        [Math.floor(Math.random()*5)];
+    
+        conf.style.cssText=`
+            left:${Math.random()*100}%;
+            top:-10px;
+            font-size:24px;
+            animation:fall ${1+Math.random()}s linear forwards;
+            z-index:999;
+        `;
+    
+        document.body.appendChild(conf);
+    
+        setTimeout(()=>{
+            conf.remove();
+        },1500);
+        }
+    }
+    
+    function startGame(){
+    
+        currentQ = 0;
+        score = 0;
+        correct = 0;
+        wrong = 0;
+        isPaused = false;
+    
+        shuffled = shuffle(questions);
+    
+        document.getElementById('start-screen')
+        .classList.add('hidden');
+    
+        document.getElementById('result-screen')
+        .classList.add('hidden');
+    
+        document.getElementById('quiz-screen')
+        .classList.remove('hidden');
+    
+        showQuestion();
+    }
+    
+    function startTimer(){
+    
+        clearInterval(timer);
+    
+        timer = setInterval(()=>{
+    
+        if(isPaused) return;
+    
+        timeLeft--;
+    
+        document.getElementById('timer-text')
+        .textContent = timeLeft;
+    
+        if(timeLeft <= 5){
+    
+            document.getElementById('timer-badge')
+            .classList.remove(
+            'bg-orange-50',
+            'text-orange-600'
+            );
+    
+            document.getElementById('timer-badge')
+            .classList.add(
+            'bg-red-50',
+            'text-red-600',
+            'animate-pulse'
+            );
+        }
+    
+        if(timeLeft <= 0){
+    
+            clearInterval(timer);
+    
+            timeUp();
+        }
+    
+        },1000);
+    }
+    
+    function showQuestion(){
+    
+        clearInterval(timer);
+    
+        timeLeft = 20;
+    
+        const q = shuffled[currentQ];
+    
+        document.getElementById('q-counter')
+        .textContent = `${currentQ+1}/${shuffled.length}`;
+    
+        document.getElementById('score-badge')
+        .innerHTML = `${score} <span class="text-sm">pts</span>`;
+    
+        document.getElementById('progress-bar')
+        .style.width = `${(currentQ/shuffled.length)*100}%`;
+    
+        document.getElementById('timer-text')
+        .textContent = timeLeft;
+    
+        document.getElementById('q-text')
+        .textContent = q.q;
+    
+        const indices=[0,1,2,3];
+    
+        for(let i=3;i>0;i--){
+        let j=Math.floor(Math.random()*(i+1));
+        [indices[i],indices[j]]=[indices[j],indices[i]];
+        }
+    
+        const correctIdx = indices.indexOf(q.ans);
+    
+        const optDiv=document.getElementById('options');
+    
+        optDiv.innerHTML='';
+    
+        indices.forEach((oi,i)=>{
+    
+        const btn=document.createElement('button');
+    
+        btn.className='w-full text-left p-4 rounded-xl border-2 border-gray-300 hover:border-indigo-400 hover:bg-indigo-50 transition-all font-600 text-gray-800 bg-white';
+    
+        btn.textContent=q.opts[oi];
+    
+        btn.onclick=()=>selectAnswer(i,correctIdx);
+    
+        optDiv.appendChild(btn);
+        });
+    
+        startTimer();
+    }
+    
+    function selectAnswer(selected, correctIdx){
+    
+        clearInterval(timer);
+    
+        const btns=document.getElementById('options').children;
+    
+        for(let b of btns){
+        b.onclick=null;
+        }
+    
+        if(selected===correctIdx){
+    
+        btns[selected].classList.add(
+            'border-green-500',
+            'bg-green-100',
+            'text-green-700'
+        );
+    
+        score += timeLeft > 10 ? 15 : 10;
+    
+        correct++;
+    
+        playCorrectSound();
+    
+        createConfetti();
+    
+        showFeedback('Đúng rồi 🎉','green');
+    
+        }else{
+    
+        btns[selected].classList.add(
+            'border-red-500',
+            'bg-red-100',
+            'text-red-700'
+        );
+    
+        btns[correctIdx].classList.add(
+            'border-green-500',
+            'bg-green-100',
+            'text-green-700'
+        );
+    
+        wrong++;
+    
+        playWrongSound();
+    
+        showFeedback('Sai rồi 📚','red');
+        }
+    
+        setTimeout(nextQuestion,1500);
+    }
+    
+    function showFeedback(msg,color){
+    
+        if(feedbackElement){
+        feedbackElement.remove();
+        }
+    
+        const fb=document.createElement('div');
+    
+        fb.className=`
+        fixed top-6 left-1/2
+        -translate-x-1/2
+        px-6 py-3
+        rounded-full
+        font-700
+        z-50
+        border-2
+        `;
+    
+        if(color==='green'){
+        fb.classList.add(
+            'bg-green-100',
+            'text-green-700',
+            'border-green-300'
+        );
+        }else{
+        fb.classList.add(
+            'bg-red-100',
+            'text-red-700',
+            'border-red-300'
+        );
+        }
+    
+        fb.textContent=msg;
+    
+        document.body.appendChild(fb);
+    
+        feedbackElement=fb;
+    
+        setTimeout(()=>{
+        fb.remove();
+        },1200);
+    }
+    
+    function timeUp(){
+    
+        wrong++;
+    
+        playWrongSound();
+    
+        showFeedback('Hết giờ ⏰','red');
+    
+        setTimeout(nextQuestion,1000);
+    }
+    
+    function togglePause(){
+    
+        isPaused = !isPaused;
+    
+        const pauseBtn = document.getElementById('pause-btn');
+    
+        if(isPaused){
+    
+        pauseBtn.innerHTML =
+        '<i data-lucide="play"></i> Tiếp tục';
+    
+        }else{
+    
+        pauseBtn.innerHTML =
+        '<i data-lucide="pause"></i> Dừng';
+        }
+    
+        lucide.createIcons();
+    }
+    
+    function nextQuestion(){
+    
+        currentQ++;
+    
+        if(currentQ >= shuffled.length){
+    
+        showResult();
+    
+        }else{
+    
+        showQuestion();
+        }
+    }
+    
+    function showResult(){
+    
+        clearInterval(timer);
+    
+        document.getElementById('quiz-screen')
+        .classList.add('hidden');
+    
+        document.getElementById('result-screen')
+        .classList.remove('hidden');
+    
+        document.getElementById('final-score')
+        .textContent = score;
+    
+        document.getElementById('correct-count')
+        .textContent = correct;
+    
+        document.getElementById('wrong-count')
+        .textContent = wrong;
+    
+        const pct = correct / shuffled.length;
+    
+        if(pct >= 0.8){
+    
+        document.getElementById('result-title')
+        .textContent='Xuất sắc!';
+    
+        }else if(pct >= 0.5){
+    
+        document.getElementById('result-title')
+        .textContent='Khá tốt!';
+    
+        }else{
+    
+        document.getElementById('result-title')
+        .textContent='Cần cố gắng thêm!';
+        }
+    }
+    
+    lucide.createIcons();
+    </script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fd8dc33f7ab1075',t:'MTc3OTA4NjMxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    </html>
